@@ -12,4 +12,9 @@ public class TestController {
         return "This is the test of project";
     }
 
+    @GetMapping("/secure")
+    public String secure(){
+        return "This is the protected api";
+    }
+
 }
