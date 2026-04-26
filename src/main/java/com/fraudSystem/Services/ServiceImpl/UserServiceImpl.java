@@ -4,6 +4,7 @@ package com.fraudSystem.Services.ServiceImpl;
 import com.fraudSystem.DTO.UserDto;
 import com.fraudSystem.DTO.UserLogin;
 import com.fraudSystem.Entity.User;
+import com.fraudSystem.Exception.ResourceNotFoundException;
 import com.fraudSystem.Repository.UserRepository;
 import com.fraudSystem.Security.JwtUtil;
 import com.fraudSystem.Services.UserService;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String UserLogin(UserLogin userLogin) {
 
-        User user = userRepository.findByEmail(userLogin.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(userLogin.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not Found"));
 
         if(!passwordEncoder.matches(userLogin.getPassword(), user.getPassword())){
             throw new RuntimeException("Invalid Exception");

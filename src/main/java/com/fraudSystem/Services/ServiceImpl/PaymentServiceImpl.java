@@ -5,6 +5,7 @@ import com.fraudSystem.DTO.TransactionDto;
 import com.fraudSystem.Entity.Card;
 import com.fraudSystem.Entity.Transaction;
 import com.fraudSystem.Entity.User;
+import com.fraudSystem.Exception.ResourceNotFoundException;
 import com.fraudSystem.Fraud.FraudDetectionSystem;
 import com.fraudSystem.Repository.CardRepository;
 import com.fraudSystem.Repository.TransactionRepository;
@@ -33,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Card addCart(CardDto cardDto) {
 
-        User user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RuntimeException("User not Found"));
+        User user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not Found"));
         Card card = new Card();
 
         card.setCardNumber(cardDto.getCardNumber());
@@ -48,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Transaction makePayment(TransactionDto transactionDto) {
 
-        Card card = this.cardRepository.findById(transactionDto.getCardId()).orElseThrow(() -> new RuntimeException("Card is not found"));
+        Card card = this.cardRepository.findById(transactionDto.getCardId()).orElseThrow(() -> new ResourceNotFoundException("Card is not found"));
 
         Transaction transaction = new Transaction();
 
