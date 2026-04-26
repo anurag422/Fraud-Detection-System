@@ -8,12 +8,16 @@ import com.fraudSystem.Exception.ResourceNotFoundException;
 import com.fraudSystem.Repository.UserRepository;
 import com.fraudSystem.Security.JwtUtil;
 import com.fraudSystem.Services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -33,7 +37,10 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole("USER");
 
-        return this.userRepository.save(user);
+        User saved = this.userRepository.save(user);
+        logger.info("User Registered SuccessFully");
+
+        return saved;
 
     }
 
@@ -42,7 +49,10 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByEmail(userLogin.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not Found"));
 
+        logger.info("User login attempt: {}",userLogin.getEmail());
+
         if(!passwordEncoder.matches(userLogin.getPassword(), user.getPassword())){
+            logger.info("Invalid password for email: {}",userLogin.getEmail());
             throw new RuntimeException("Invalid Exception");
         }
 

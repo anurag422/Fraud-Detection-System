@@ -11,6 +11,8 @@ import com.fraudSystem.Repository.CardRepository;
 import com.fraudSystem.Repository.TransactionRepository;
 import com.fraudSystem.Repository.UserRepository;
 import com.fraudSystem.Services.PaymentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     @Autowired
     private CardRepository cardRepository;
@@ -43,16 +47,26 @@ public class PaymentServiceImpl implements PaymentService {
         card.setBalance(cardDto.getBalance());
         card.setUser(user);
 
-        return cardRepository.save(card);
+        Card saved = cardRepository.save(card);
+
+        logger.info("Card Added Successfully");
+
+        return saved;
+
     }
 
     @Override
     public Transaction makePayment(TransactionDto transactionDto) {
 
+        logger.info("makePayment is Start");
+
         Card card = this.cardRepository.findById(transactionDto.getCardId()).orElseThrow(() -> new ResourceNotFoundException("Card is not found"));
+
+        logger.info("Payment is start for cardId: {}",transactionDto.getCardId());
 
         Transaction transaction = new Transaction();
 
+        logger.info("Transaction Amount: {}",transaction.getAmount());
         transaction.setAmount(transactionDto.getAmount());
         transaction.setLocation(transactionDto.getLocation());
         transaction.setTimeStamp(LocalDateTime.now());
@@ -66,10 +80,12 @@ public class PaymentServiceImpl implements PaymentService {
         }else {
 
             if (card.getBalance() < transactionDto.getAmount()) {
+                logger.info("Payment failed due to insufficient balance");
                 transaction.setStatus("FAILED");
             } else {
                 card.setBalance(card.getBalance() - transactionDto.getAmount());
                 transaction.setStatus("SUCCESS");
+                logger.info("Payment is Successful for cardId: {}",transactionDto.getCardId());
                 cardRepository.save(card);
             }
         }

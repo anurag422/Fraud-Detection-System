@@ -2,6 +2,8 @@ package com.fraudSystem.Fraud;
 
 import com.fraudSystem.Entity.Transaction;
 import com.fraudSystem.Repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +14,19 @@ import java.util.List;
 @Service
 public class FraudDetectionSystem {
 
+    private static final Logger logger = LoggerFactory.getLogger(FraudDetectionSystem.class);
+
     @Autowired
     private TransactionRepository transactionRepository;
 
     public String checkFraud(Long cardId,Double amount,String location){
 
+        logger.info("Running Fraud detection for cardId: {}",cardId);
+
         int risk = 0;
 
         if(amount >= 50000){
+            logger.info("Heigh Amount detected: {}",amount);
             risk += 50;
         }
 

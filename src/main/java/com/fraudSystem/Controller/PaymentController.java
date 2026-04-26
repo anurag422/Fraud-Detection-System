@@ -5,6 +5,7 @@ import com.fraudSystem.DTO.TransactionDto;
 import com.fraudSystem.Entity.Card;
 import com.fraudSystem.Entity.Transaction;
 import com.fraudSystem.Services.PaymentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +20,12 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/addCard")
-    public Card addCard(@RequestBody CardDto cardDto){
+    public Card addCard(@Valid @RequestBody CardDto cardDto){
         return this.paymentService.addCart(cardDto);
     }
 
     @PostMapping("/pay")
-    public Transaction pay(@RequestBody TransactionDto transactionDto){
+    public Transaction pay(@Valid @RequestBody TransactionDto transactionDto){
         return this.paymentService.makePayment(transactionDto);
     }
 
