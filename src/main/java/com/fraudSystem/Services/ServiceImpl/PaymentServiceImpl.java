@@ -68,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Transaction transaction = new Transaction();
 
-        logger.info("Transaction Amount: {}",transaction.getAmount());
+        logger.info("Transaction Amount: {}",transactionDto.getAmount());
         transaction.setAmount(transactionDto.getAmount());
         transaction.setLocation(transactionDto.getLocation());
         transaction.setTimeStamp(LocalDateTime.now());

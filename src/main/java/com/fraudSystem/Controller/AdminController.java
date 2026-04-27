@@ -5,8 +5,12 @@ import com.fraudSystem.Entity.User;
 import com.fraudSystem.Repository.TransactionRepository;
 import com.fraudSystem.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,8 +26,8 @@ public class AdminController {
     private UserRepository userRepository;
 
     @GetMapping("/transaction")
-    public List<Transaction> allTransaction(){
-        return transactionRepository.findAll();
+    public Page<Transaction> allTransaction(@RequestParam int page, @RequestParam int size ){
+        return transactionRepository.findAll(PageRequest.of(page,size));
     }
 
     @GetMapping("/fraudTransaction")

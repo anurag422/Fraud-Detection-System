@@ -30,7 +30,9 @@ public class FraudDetectionSystem {
             risk += 50;
         }
 
-        List<Transaction> transactions = transactionRepository.findAll();
+        List<Transaction> transactions = transactionRepository.findTop5ByCardIdOrderByTimeStampDesc(cardId);
+
+        logger.info("get all the transaction for checking");
 
         for (Transaction tx: transactions){
 
@@ -38,13 +40,15 @@ public class FraudDetectionSystem {
 
                 Duration duration = Duration.between(tx.getTimeStamp(), LocalDateTime.now());
 
-                if(duration.toMinutes() > 2){
+                if(duration.toMinutes() < 2){
                     risk += 30;
                 }
 
             }
 
         }
+
+        logger.info("Check location of transactions");
 
         for (Transaction tx: transactions){
             if (tx.getCard().getId().equals(cardId)){
@@ -54,6 +58,8 @@ public class FraudDetectionSystem {
                 }
             }
         }
+
+        logger.info("Final result finding");
 
         if (risk >= 70){
             return "BLOCKED";
