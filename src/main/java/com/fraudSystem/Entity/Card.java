@@ -19,8 +19,6 @@ public class Card {
 
     private String expiry;
 
-    private String cvv;
-
     private Double balance;
 
     @ManyToOne

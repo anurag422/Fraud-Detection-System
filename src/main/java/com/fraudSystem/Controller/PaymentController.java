@@ -2,6 +2,7 @@ package com.fraudSystem.Controller;
 
 import com.fraudSystem.DTO.CardDto;
 import com.fraudSystem.DTO.TransactionDto;
+import com.fraudSystem.DTO.TransactionResponse;
 import com.fraudSystem.Entity.Card;
 import com.fraudSystem.Entity.Transaction;
 import com.fraudSystem.Services.PaymentService;
@@ -25,7 +26,7 @@ public class PaymentController {
     }
 
     @PostMapping("/pay")
-    public Transaction pay(@Valid @RequestBody TransactionDto transactionDto){
+    public TransactionResponse pay(@Valid @RequestBody TransactionDto transactionDto){
         return this.paymentService.makePayment(transactionDto);
     }
 

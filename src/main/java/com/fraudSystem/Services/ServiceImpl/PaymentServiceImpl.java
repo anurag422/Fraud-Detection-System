@@ -2,6 +2,7 @@ package com.fraudSystem.Services.ServiceImpl;
 
 import com.fraudSystem.DTO.CardDto;
 import com.fraudSystem.DTO.TransactionDto;
+import com.fraudSystem.DTO.TransactionResponse;
 import com.fraudSystem.Entity.Card;
 import com.fraudSystem.Entity.Transaction;
 import com.fraudSystem.Entity.User;
@@ -10,7 +11,9 @@ import com.fraudSystem.Fraud.FraudDetectionSystem;
 import com.fraudSystem.Repository.CardRepository;
 import com.fraudSystem.Repository.TransactionRepository;
 import com.fraudSystem.Repository.UserRepository;
+import com.fraudSystem.Security.EncryptionUtil;
 import com.fraudSystem.Services.PaymentService;
+import com.fraudSystem.Util.CardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         User user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not Found"));
         Card card = new Card();
 
-        card.setCardNumber(cardDto.getCardNumber());
-        card.setCvv(cardDto.getCvv());
+        card.setCardNumber(EncryptionUtil.encrypt(cardDto.getCardNumber()));
         card.setExpiry(cardDto.getExpiry());
         card.setBalance(cardDto.getBalance());
         card.setUser(user);
@@ -56,7 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Transaction makePayment(TransactionDto transactionDto) {
+    public TransactionResponse makePayment(TransactionDto transactionDto) {
 
         logger.info("makePayment is Start");
 
@@ -90,6 +92,24 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
         transaction.setCard(card);
-        return transactionRepository.save(transaction);
+
+        Transaction saved = transactionRepository.save(transaction);
+
+        return  response(saved,card.getCardNumber());
+    }
+
+    public TransactionResponse response(Transaction transaction, String cardNumber){
+
+        TransactionResponse transactionResponse =  new TransactionResponse();
+
+        transactionResponse.setAmount(transaction.getAmount());
+        transactionResponse.setStatus(transaction.getStatus());
+
+        String decrypt = EncryptionUtil.decrypt(cardNumber);
+
+        transactionResponse.setMaskedCardNumber(CardUtil.maskCard(decrypt));
+
+        return transactionResponse;
+
     }
 }

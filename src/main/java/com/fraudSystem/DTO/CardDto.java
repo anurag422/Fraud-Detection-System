@@ -15,9 +15,6 @@ public class CardDto {
     @NotBlank(message = "Field is required")
     private String expiry;
 
-    @NotBlank(message = "Field is Required")
-    private String cvv;
-
     @NotNull(message = "Amount is Required")
     @Min(value = 1,message = "Amount must be greater than 0")
     private Double balance;
