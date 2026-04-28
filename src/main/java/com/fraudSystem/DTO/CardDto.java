@@ -13,7 +13,7 @@ public class CardDto {
     private String cardNumber;
 
     @NotBlank(message = "Field is required")
-    private String expiry;
+    private String expiry;  
 
     @NotNull(message = "Amount is Required")
     @Min(value = 1,message = "Amount must be greater than 0")
