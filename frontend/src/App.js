@@ -1,18 +1,15 @@
-import { useEffect } from "react";
-import axios from "axios";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
-
-   useEffect(() => {
-       axios.get("http://localhost:8080/auth/test")
-         .then(res => console.log(res.data))
-         .catch(err => console.log(err));
-     }, []);
-
   return (
-    <div className="App">
-      <h1>Frontend Connected</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
